@@ -13,4 +13,5 @@ $ nohup ./createVectors.sh
 
 - Machine: (14 vCPUs, 450 GB memory) 250gig
 - Should render within 24 hours so preemptive is possible.
-- Make sure to enable storage API in the instance (Full)
+- Make sure to enable storage API for the instance (Full)
+- Make sure to enable compute engine API for the instance (Read/Write)

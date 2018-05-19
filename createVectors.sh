@@ -17,7 +17,23 @@ pip install numpy
 wget https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-articles.xml.bz2
 
 # Take enwiki-latest-pages-articles.xml.bz2 as input and output enwiki-latest-pages-articles.txt
-python3 XmlToTxt.py
+python3 <<EOL
+import sys
+from gensim.corpora import WikiCorpus
+
+output = open("enwiki-latest-pages-articles.txt", 'w')
+wiki = WikiCorpus("enwiki-latest-pages-articles.xml.bz2")
+
+i = 0
+for text in wiki.get_texts():
+    output.write(bytes(' '.join(text), 'utf-8').decode('utf-8') + '\n')
+    i = i + 1
+    if (i % 1000 == 0):
+        print('Processed ' + str(i) + ' articles')
+output.close()
+print('Processed ' + str(i) + ' articles')
+print('Processing complete!')
+EOL
 
 # Download and unzip GloVe
 wget https://github.com/stanfordnlp/GloVe/archive/master.zip && \
@@ -81,3 +97,7 @@ mv md5.txt ./distro/md5.txt
 cd distro
 gsutil rm gs://weaviate-vectors/*
 gsutil cp *.* gs://weaviate-vectors
+gsutil acl ch -u AllUsers:R gs://weaviate-vectors/*.*
+
+# All is done, shut down Gcloud
+gcloud -q compute instances delete $(curl "http://metadata.google.internal/computeMetadata/v1/instance/name" -H "Metadata-Flavor: Google") --zone $(curl "http://metadata.google.internal/computeMetadata/v1/instance/zone" -H "Metadata-Flavor: Google") --delete-disks all
