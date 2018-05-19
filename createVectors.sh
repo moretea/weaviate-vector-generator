@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 ##
 # This script creates the Weaviate vectors
