@@ -22,3 +22,4 @@ gcloud beta compute --project=some_project instances create vectors-creator --zo
 
 _Note I: Change `some_project` to your project id!_
 _Note II: Change `something@developer.gserviceaccount.com` to your service account!_
+_Note III: Logs: /var/log/syslog_
