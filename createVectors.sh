@@ -13,7 +13,7 @@ pip3 install numpy gensim
 pip install numpy
 
 # Get most recent corpi
-wget https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-articles.xml.bz2
+wget -qc https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-articles.xml.bz2
 
 # Take enwiki-latest-pages-articles.xml.bz2 as input and output enwiki-latest-pages-articles.txt
 python3 <<EOL
@@ -53,7 +53,7 @@ VERBOSE=2
 MEMORY=350.0
 VOCAB_MIN_COUNT=6
 VECTOR_SIZE=300
-MAX_ITER=28
+MAX_ITER=15
 WINDOW_SIZE=15
 BINARY=2
 NUM_THREADS=8
