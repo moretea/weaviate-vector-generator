@@ -4,24 +4,45 @@
 # This script creates the Weaviate vectors
 ##
 
+# Set variables for language
+VECTOR_LANG=en      # example: en de nl
+VECTOR_SIZE=300     # size of the vector
+VOCAB_MIN_COUNT=10  # min vocab, how often should the word occur?
+
+# Set Glove VARs
+CORPUS=${VECTOR_LANG}wiki-latest-pages-articles.txt
+VOCAB_FILE=vocab.txt
+COOCCURRENCE_FILE=cooccurrence.bin
+COOCCURRENCE_SHUF_FILE=cooccurrence.shuf.bin
+BUILDDIR=build
+SAVE_FILE=vectors
+VERBOSE=2
+MEMORY=350.0
+VOCAB_MIN_COUNT=6
+MAX_ITER=15
+WINDOW_SIZE=15
+BINARY=2
+NUM_THREADS=8
+X_MAX=10
+
 # Install python3 and python2 deps
 sudo apt-get update
-sudo apt-get -y install unzip gcc make python-setuptools python-dev build-essential python3-pip
+sudo apt-get -y install unzip gcc make python-setuptools python-dev build-essential python3-pip python-pip
 
 # Install packages for python2 & 3
 pip3 install numpy gensim
 pip install numpy
 
 # Get most recent corpi
-wget -qc https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-articles.xml.bz2
+wget -qc https://dumps.wikimedia.org/${VECTOR_LANG}/wiki/latest/${VECTOR_LANG}wiki-latest-pages-articles.xml.bz2
 
 # Take enwiki-latest-pages-articles.xml.bz2 as input and output enwiki-latest-pages-articles.txt
 python3 <<EOL
 import sys
 from gensim.corpora import WikiCorpus
 
-output = open("enwiki-latest-pages-articles.txt", 'w')
-wiki = WikiCorpus("enwiki-latest-pages-articles.xml.bz2")
+output = open("${VECTOR_LANG}wiki-latest-pages-articles.txt", 'w')
+wiki = WikiCorpus("${VECTOR_LANG}wiki-latest-pages-articles.xml.bz2")
 
 i = 0
 for text in wiki.get_texts():
@@ -41,23 +62,6 @@ mv GloVe-master/* ./
 
 # Render vectors
 make
-
-# Set VARs
-CORPUS=enwiki-latest-pages-articles.txt
-VOCAB_FILE=vocab.txt
-COOCCURRENCE_FILE=cooccurrence.bin
-COOCCURRENCE_SHUF_FILE=cooccurrence.shuf.bin
-BUILDDIR=build
-SAVE_FILE=vectors
-VERBOSE=2
-MEMORY=350.0
-VOCAB_MIN_COUNT=6
-VECTOR_SIZE=300
-MAX_ITER=15
-WINDOW_SIZE=15
-BINARY=2
-NUM_THREADS=8
-X_MAX=10
 
 # Run!
 echo "$ $BUILDDIR/vocab_count -min-count $VOCAB_MIN_COUNT -verbose $VERBOSE < $CORPUS > $VOCAB_FILE"
@@ -82,20 +86,14 @@ fi
 # Create GZIP CBOR file
 wget https://raw.githubusercontent.com/creativesoftwarefdn/weaviate-vector-generator/master/bin/csvToCbor && \
 chmod +x csvToCbor && \
-./csvToCbor -input=vectors.txt -output=vectors.cbor.gz
+./csvToCbor -input=vectors.txt -output=vectors-${VECTOR_LANG}-${VECTOR_SIZE}.cbor.gz
 
 # Create MD5
-md5sum vectors.cbor.gz | awk '{ print $1 }' > md5.txt
-
-# create distro folder
-mkdir distro && \
-mv vectors.cbor.gz ./distro/vectors.cbor.gz && \
-mv md5.txt ./distro/md5.txt
+md5sum vectors-${VECTOR_LANG}-${VECTOR_SIZE}.cbor.gz | awk '{ print $1 }' > vectors-${VECTOR_LANG}-${VECTOR_SIZE}.md5
 
 # Send distro to Google Storage Bucket
-cd distro
-gsutil rm gs://weaviate-vectors/*
-gsutil cp *.* gs://weaviate-vectors
+gsutil cp vectors-${VECTOR_LANG}-${VECTOR_SIZE}.cbor.gz gs://weaviate-vectors
+gsutil cp vectors-${VECTOR_LANG}-${VECTOR_SIZE}.md5 gs://weaviate-vectors
 gsutil acl ch -u AllUsers:R gs://weaviate-vectors/*.*
 
 # All is done, shut down Gcloud
