@@ -34,7 +34,7 @@ pip3 install numpy gensim
 pip install numpy
 
 # Get most recent corpi
-wget -qc https://dumps.wikimedia.org/${VECTOR_LANG}/wiki/latest/${VECTOR_LANG}wiki-latest-pages-articles.xml.bz2
+wget -qc https://dumps.wikimedia.org/${VECTOR_LANG}wiki/latest/${VECTOR_LANG}wiki-latest-pages-articles.xml.bz2
 
 # Take enwiki-latest-pages-articles.xml.bz2 as input and output enwiki-latest-pages-articles.txt
 python3 <<EOL
