@@ -80,9 +80,9 @@ if [ "$CORPUS" = 'text8' ]; then
 fi
 
 # Create GZIP CBOR file
-wget https://storage.googleapis.com/weaviate-vectors/bin/csvToCbor && \
+wget https://raw.githubusercontent.com/creativesoftwarefdn/weaviate-vector-generator/master/bin/csvToCbor && \
 chmod +x csvToCbor && \
-./csvToCbor
+./csvToCbor -input=vectors.txt -output=vectors.cbor.gz
 
 # Create MD5
 md5sum vectors.cbor.gz | awk '{ print $1 }' > md5.txt
