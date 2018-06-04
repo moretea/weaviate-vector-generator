@@ -12,11 +12,11 @@ $ nohup ./createVectors.sh
 # Download CBOR files
 
 - EN: https://storage.googleapis.com/weaviate-vectors/vectors-en-300.cbor.gz
-- EN MD5:https://storage.googleapis.com/weaviate-vectors/vectors-en-300.cbor.md5
+- EN MD5 :https://storage.googleapis.com/weaviate-vectors/vectors-en-300.md5
 - DE: https://storage.googleapis.com/weaviate-vectors/vectors-de-300.cbor.gz
-- DE MD5:https://storage.googleapis.com/weaviate-vectors/vectors-de-300.cbor.md5
+- DE MD5: https://storage.googleapis.com/weaviate-vectors/vectors-de-300.md5
 - NL: https://storage.googleapis.com/weaviate-vectors/vectors-nl-300.cbor.gz
-- NL MD5:https://storage.googleapis.com/weaviate-vectors/vectors-nl-300.cbor.md5
+- NL MD5: https://storage.googleapis.com/weaviate-vectors/vectors-nl-300.md5
 
 Vectors saved as: `type Vectors map[string][]float64`
 
